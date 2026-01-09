@@ -4,7 +4,9 @@
   if (!canvas || prefersReducedMotion) return;
 
   const ctx = canvas.getContext('2d', { alpha: true });
-  let width = 0, height = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let width = 0, height = 0;
+  function getDPR() { return Math.min(window.devicePixelRatio || 1, 2); }
+  let dpr = getDPR();
 
   // Advection–diffusion plume parameters (deterministic)
   let windSpeed = 190; // px/s, mean along-wind speed (slightly faster)
@@ -211,7 +213,10 @@
     ctx.fillRect(0, 0, width, height);
   }
 
+  let resizeTimeout = null;
   function resize() {
+    // Update DPR on resize to handle zoom
+    dpr = getDPR();
     const rect = canvas.getBoundingClientRect();
     width = Math.max(320, Math.floor(rect.width));
     height = Math.max(200, Math.floor(rect.height));
@@ -235,8 +240,18 @@
 
     initFlowField();
   }
+  function debouncedResize() {
+    if (resizeTimeout) clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(resize, 100);
+  }
   resize();
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize', debouncedResize);
+  // Handle zoom changes
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', debouncedResize);
+  }
+  // Also listen for zoom events
+  window.addEventListener('orientationchange', debouncedResize);
 
   // Particles (increase density)
   // Fewer particles to reduce load

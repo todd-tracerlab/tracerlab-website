@@ -103,21 +103,23 @@ p { margin: 0 0 12px; color: #d7dde4; }
 .footer-block { max-width: 420px; }
 
 /* Hero adjustments for dispersion canvas */
-.hero { position: relative; overflow: hidden; }
-.dispersion-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
-.hero > .container { position: relative; z-index: 1; }
+.hero { position: relative; overflow: hidden; min-height: 400px; }
+.dispersion-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; object-fit: cover; }
+.hero > .container { position: relative; z-index: 2; pointer-events: none; }
+.hero > .container h1,
+.hero > .container .lede { pointer-events: auto; }
 
 @media (prefers-reduced-motion: reduce) {
   .dispersion-canvas { display: none; }
 }
 
 /* Keep hero text higher without shifting the plume out of view */
-.hero { padding-top: 28px; padding-bottom: 120px; }
-/* Ensure canvas fills the hero */
-.dispersion-canvas { top: 0; bottom: 0; height: 100%; }
+.hero { padding-top: 28px; padding-bottom: 120px; min-height: 500px; }
+/* Ensure canvas fills the hero and maintains aspect on zoom */
+.dispersion-canvas { top: 0; bottom: 0; height: 100%; width: 100%; object-fit: cover; }
 
-/* Make the hero lede black and slightly lower */
-.hero .lede { color: #000000; margin-top: 120px; font-weight: 700; }
+/* Make the hero lede white and directly below heading */
+.hero .hero-lede { color: #ffffff; margin-top: 16px; font-weight: 400; }
 
 @media (min-width: 960px) {
   .hero { padding-top: 24px; padding-bottom: 136px; }
