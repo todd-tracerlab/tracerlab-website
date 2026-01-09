@@ -32,9 +32,9 @@
           <img class="brand-logo" src="assets/images/tracer_lab_log.png" alt="TracerLab" />
         </a>
         <nav class="nav" aria-label="Primary">
-          <a href="/#services">Expertise</a>
+          <a href="#services">Expertise</a>
           <a href="/about.html">About</a>
-          <a href="/#contact">Contact</a>
+          <a href="#contact">Contact</a>
         </nav>
       </div>
     </header>
@@ -120,6 +120,40 @@
       </div>
       <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Handle anchor links without showing # in URL
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href !== '#' && href !== '#top') {
+              e.preventDefault();
+              const targetId = href.substring(1);
+              const targetElement = document.getElementById(targetId);
+              if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Update URL without hash
+                window.history.pushState(null, null, '/');
+              }
+            }
+          });
+        });
+        
+        // Handle external links to hash anchors
+        document.querySelectorAll('a[href^="/#"]').forEach(anchor => {
+          anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            const hash = href.substring(1); // Remove leading /
+            if (hash.startsWith('#')) {
+              e.preventDefault();
+              const targetId = hash.substring(1);
+              const targetElement = document.getElementById(targetId);
+              if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                window.history.pushState(null, null, '/');
+              }
+            }
+          });
+        });
       </script>
     </footer>
   </body>
