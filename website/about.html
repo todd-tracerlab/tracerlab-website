@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>About — TracerLab</title>
+    <meta name="description" content="About Todd McKinney, atmospheric scientist and engineer specializing in atmospheric transport, weather modification, and high-altitude measurement systems." />
+
+    <!-- SEO / Social -->
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0b0d10" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="About — TracerLab" />
+    <meta property="og:description" content="About Todd McKinney, atmospheric scientist and engineer." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="About — TracerLab" />
+    <meta name="twitter:description" content="About Todd McKinney, atmospheric scientist and engineer." />
+
+    <link rel="icon" href="./assets/images/tracer_lab_icon.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container row between center">
+        <a class="brand" href="./index.html" aria-label="TracerLab home">
+          <img class="brand-logo" src="./assets/images/tracer_lab_log.png" alt="TracerLab" />
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="./index.html#services">Expertise</a>
+          <a href="./about.html">About</a>
+          <a href="./index.html#contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="section about-section-expanded" style="padding-top: 80px;">
+        <div class="container">
+          <h2>Background</h2>
+          <div class="about-content">
+            <div class="about-photo-wrapper">
+              <img src="./assets/images/me.jpeg" alt="Todd McKinney" class="about-photo" />
+            </div>
+            <div class="about-text">
+              <h3>Todd McKinney</h3>
+              
+              <p>Todd McKinney is an atmospheric scientist and engineer with expertise in atmospheric transport, weather modification, high-altitude ballooning, and atmospheric sensing systems. He holds graduate and undergraduate degrees in Atmospheric and Earth Systems Science from the University of Alabama in Huntsville.</p>
+              
+              <p>With experience spanning NASA, NOAA, and private industry, Todd has worked on stratospheric balloon missions, weather modification programs, and atmospheric sensing instrumentation. His background includes roles in payload design, field operations, data analysis, and research across diverse environments from Antarctica to field campaigns across the United States.</p>
+              
+              <p>Todd's work focuses on advancing understanding of atmospheric processes through observational science, modeling, and technology development. He has contributed to peer-reviewed research, developed operational systems, and led field campaigns that integrate multiple measurement platforms to study atmospheric transport, cloud physics, and boundary layer dynamics.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="contact" class="site-footer">
+      <div class="container row between start">
+        <div class="footer-block">
+          <h4>Contact</h4>
+          <p>Interested in consulting services or have a project inquiry?</p>
+          <p>
+            <a class="button primary" href="mailto:todd@tracerlab.org?subject=Inquiry%3A%20TracerLab">todd@tracerlab.org</a>
+          </p>
+        </div>
+        <div class="footer-block">
+          <h4>Expertise</h4>
+          <ul class="unstyled">
+            <li>Atmospheric transport & dispersion</li>
+            <li>Weather modification programs</li>
+            <li>Sensing systems & instrumentation</li>
+            <li>Balloon payload design</li>
+          </ul>
+        </div>
+      </div>
+      <div class="container tiny print">
+        <p>© <span id="year"></span> TracerLab. All rights reserved.</p>
+      </div>
+      <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+      </script>
+    </footer>
+  </body>
+</html>
+
