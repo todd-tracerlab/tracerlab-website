@@ -143,6 +143,46 @@
     density = new Float32Array(gridW * gridH);
   }
 
+  function sampleDensityFrom(grid, gW, gH, w, h, x, y) {
+    const cx = w / gW, cy = h / gH;
+    const gx = Math.max(0, Math.min(gW - 1, x / cx));
+    const gy = Math.max(0, Math.min(gH - 1, y / cy));
+    const x0 = Math.floor(gx), y0 = Math.floor(gy);
+    const tx = gx - x0, ty = gy - y0;
+    const x1 = Math.min(gW - 1, x0 + 1);
+    const y1 = Math.min(gH - 1, y0 + 1);
+    const d00 = grid[y0 * gW + x0];
+    const d10 = grid[y0 * gW + x1];
+    const d01 = grid[y1 * gW + x0];
+    const d11 = grid[y1 * gW + x1];
+    const d0 = d00 * (1 - tx) + d10 * tx;
+    const d1 = d01 * (1 - tx) + d11 * tx;
+    return d0 * (1 - ty) + d1 * ty;
+  }
+
+  function resampleDensity(oldDensity, oldGridW, oldGridH, oldWidth, oldHeight) {
+    if (!oldDensity || oldGridW < 2 || oldGridH < 2) return;
+    const newDensity = new Float32Array(gridW * gridH);
+    const cx = width / gridW;
+    const cy = height / gridH;
+    for (let gy = 0; gy < gridH; gy++) {
+      const y = (gy + 0.5) * cy;
+      for (let gx = 0; gx < gridW; gx++) {
+        const x = (gx + 0.5) * cx;
+        newDensity[gy * gridW + gx] = sampleDensityFrom(
+          oldDensity,
+          oldGridW,
+          oldGridH,
+          oldWidth,
+          oldHeight,
+          x,
+          y
+        );
+      }
+    }
+    density = newDensity;
+  }
+
   function gridIndex(gx, gy) {
     if (gx < 0) gx = 0; else if (gx >= gridW) gx = gridW - 1;
     if (gy < 0) gy = 0; else if (gy >= gridH) gy = gridH - 1;
@@ -215,6 +255,12 @@
 
   let resizeTimeout = null;
   function resize() {
+    const oldWidth = width;
+    const oldHeight = height;
+    const oldGridW = gridW;
+    const oldGridH = gridH;
+    const oldDensity = density;
+
     // Update DPR on resize to handle zoom
     dpr = getDPR();
     const rect = canvas.getBoundingClientRect();
@@ -230,12 +276,25 @@
     source.x = Math.max(8, width * 0.06);
     source.y = height * 0.58;
 
-    initGrid();
-    for (let i = 0; i < densityPrimeBoost; i++) deposit(source.x, source.y, 1.0);
+    const nextGridW = Math.max(24, Math.round(width / targetCell));
+    const nextGridH = Math.max(14, Math.round(height / targetCell));
+    const sizeChanged = oldWidth !== width || oldHeight !== height || oldGridW !== nextGridW || oldGridH !== nextGridH;
 
-    if (!normalizationLocked) {
-      globalMaxD = Math.max(1, globalMaxD);
-      calibrationMaxD = 0;
+    initGrid();
+
+    if (sizeChanged && oldDensity) {
+      resampleDensity(oldDensity, oldGridW, oldGridH, oldWidth, oldHeight);
+      // Keep normalization steady across resizes to avoid color reset.
+      let frameMax = 0;
+      for (let i = 0; i < density.length; i++) if (density[i] > frameMax) frameMax = density[i];
+      if (!normalizationLocked) calibrationMaxD = Math.max(calibrationMaxD, frameMax);
+      globalMaxD = Math.max(1, globalMaxD, frameMax);
+    } else {
+      for (let i = 0; i < densityPrimeBoost; i++) deposit(source.x, source.y, 1.0);
+      if (!normalizationLocked) {
+        globalMaxD = Math.max(1, globalMaxD);
+        calibrationMaxD = 0;
+      }
     }
 
     initFlowField();
@@ -255,7 +314,7 @@
 
   // Particles (increase density)
   // Fewer particles to reduce load
-  const numParticles = Math.floor((width * height) / 4000) + 600;
+  const numParticles = Math.floor((width * height) / 8000) + 300;
   const particles = [];
 
   function spawnParticle(p) {
