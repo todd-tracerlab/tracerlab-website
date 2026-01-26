@@ -172,6 +172,18 @@
             }
           });
         });
+        
+        // Handle section query param (e.g., /?section=services) without showing hash
+        const params = new URLSearchParams(window.location.search);
+        const section = params.get('section');
+        if (section) {
+          const targetElement = document.getElementById(section);
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          // Clean up URL to root without query string
+          window.history.replaceState(null, null, '/');
+        }
       </script>
     </footer>
   </body>
